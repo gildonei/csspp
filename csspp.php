@@ -3,17 +3,24 @@
 class CSSPP
 {
   // Regex for CSS expanders. Order in this array matters.
-  static public $expanders = array(    
-    '#\s*background\-image\s*:\s*gradient\((.+)\)\s*;#' => 'background-image: gradient($1); background-image: -moz-gradient($1); background-image: -webkit-gradient($1);',
-    '#\s*background\s*:.+gradient\((.+)\).+;#' => '$0 background-image: -moz-gradient($1); background-image: -webkit-gradient($1);',
-    '#\s*background\-size\s*:\s*(.+);#i' => '$0 -moz-background-size: $1; -webkit-background-size: $1;',
-    '#\s*border\-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius: $1; -webkit-border-radius: $1;',
-    '#\s*border-bottom-left-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-bottomleft: $1; -webkit-border-bottom-left-radius: $1;',
-    '#\s*border-bottom-right-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-bottomright: $1; -webkit-border-bottom-right-radius: $1;',
-    '#\s*border-top-left-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-topleft: $1; -webkit-border-top-left-radius: $1;',
-    '#\s*border-top-right-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-topright: $1; -webkit-border-top-right-radius: $1;',
-    '#\s*box\-shadow\s*:\s*(.+);#i' => '$0 -moz-box-shadow: $1; -webkit-box-shadow: $1;',
-    '#\s*transition\s*:\s*(.+);#i' => '$0 -moz-transition: $1; -webkit-transition: $1;'
+  static public $expanders = array(
+    '#\s*appearance\s*:\s*(.+);#i' => '$0 -moz-appearance: $1; -o-appearace: $1; -webkit-appearance: $1;',
+    '#\s*background\-image\s*:\s*gradient\((.+)\)\s*;#' => 'background-image: gradient($1); background-image: -moz-gradient($1); background-image: -o-gradient($1); background-image: -webkit-gradient($1);',
+    '#\s*background\s*:.+gradient\((.+)\).+;#' => '$0 background-image: -moz-gradient($1); background-image: -o-gradient($1); background-image: -webkit-gradient($1);',
+    '#\s*background\-clip\s*:\s*(.+);#i' => '$0 -moz-background-clip: $1; -o-background-clip: $1; -webkit-background-clip: $1;',
+    '#\s*background\-origin\s*:\s*(.+);#i' => '$0 -moz-background-origin: $1; -o-background-origin: $1; -webkit-background-origin: $1;',
+    '#\s*background\-size\s*:\s*(.+);#i' => '$0 -moz-background-size: $1; -o-background-size: $1; -webkit-background-size: $1;',
+    '#\s*border\-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius: $1; -o-border-radius: $1; -webkit-border-radius: $1;',
+    '#\s*border-bottom-left-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-bottomleft: $1; -o-border-bottom-left-radius: $1; -webkit-border-bottom-left-radius: $1;',
+    '#\s*border-bottom-right-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-bottomright: $1; -o-border-bottom-right-radius: $1; -webkit-border-bottom-right-radius: $1;',
+    '#\s*border-top-left-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-topleft: $1; -o-border-top-left-radius: $1; -webkit-border-top-left-radius: $1;',
+    '#\s*border-top-right-radius\s*:\s*(.+);#i' => '$0 -moz-border-radius-topright: $1; -o-border-top-right-radius: $1; -webkit-border-top-right-radius: $1;',
+    '#\s*box\-shadow\s*:\s*(.+);#i' => '$0 -moz-box-shadow: $1; -o-box-shadow: $1; -webkit-box-shadow: $1;',
+    '#\s*box\-sizing\s*:\s*(.+);#i' => '$0 -moz-box-sizing: $1; -o-box-sizing: $1; -webkit-box-sizing: $1;',
+    '#\s*transition\s*:\s*(.+);#i' => '$0 -moz-transition: $1; -o-transition: $1 -webkit-transition: $1;',
+    '#\s*transition-duration\s*:\s*(.+);#i' => '$0 -moz-transition-duration: $1; -o-transition-duration: $1; -webkit-transition-duration: $1;',
+    '#\s*transition-property\s*:\s*(.+);#i' => '$0 -moz-transition-property: $1; -o-transition-property: $1; -webkit-transition-property: $1;',
+    '#\s*transition-timing-function\s*:\s*(.+);#i' => '$0 -moz-transition-timing-function: $1; -o-transition-timing-function: $1; -webkit-transition-timing-function: $1;',
   );
   
   private $base_dir;
