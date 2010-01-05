@@ -60,6 +60,12 @@ class CSSPP
   {
     return $this->process();
   }
+  
+  // Appends some text (Hopefully CSS) to the end of the CSS
+  public function append($css)
+  {
+    $this->css .= $css;
+  }
 
   // Replace all instances of @include with the contents of the file
   private function includeExternals()
@@ -77,7 +83,15 @@ class CSSPP
       // Make sure we haven't included the file already
       if (!in_array($file, $this->included))
       {
-        $css = file_get_contents($this->css_dir . '/' . $file);
+        if (substr($file, 0, 1) == '/')
+        {
+          $file_name = $file;
+        }
+        else
+        {
+          $file_name = $this->css_dir . '/' . $file;
+        }
+        $css = file_get_contents($file_name);
         $this->css = str_replace($found[0][$i], $css, $this->css);
         array_push($this->included, $file);
       }
