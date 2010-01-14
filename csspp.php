@@ -21,6 +21,8 @@ class CSSPP
     '#\s*transition-duration\s*:\s*(.+);#i' => '$0 -moz-transition-duration: $1; -o-transition-duration: $1; -webkit-transition-duration: $1;',
     '#\s*transition-property\s*:\s*(.+);#i' => '$0 -moz-transition-property: $1; -o-transition-property: $1; -webkit-transition-property: $1;',
     '#\s*transition-timing-function\s*:\s*(.+);#i' => '$0 -moz-transition-timing-function: $1; -o-transition-timing-function: $1; -webkit-transition-timing-function: $1;',
+    '#\s*user-drag\s*:\s*(.+);#i' => '$0 -moz-user-drag: $1; -o-user-drag: $1; -webkit-user-drag: $1;',
+    '#\s*user-select\s*:\s*(.+);#i' => '$0 -moz-user-select: $1; -o-user-select: $1; -webkit-user-select: $1;'
   );
   
   private $base_dir;
