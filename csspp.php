@@ -34,6 +34,7 @@ class CSSPP
     'comments' => FALSE,
     'expanders' => TRUE,
     'includes' => TRUE,
+    'imports' => TRUE,
     'minify' => TRUE,
     'variables' => TRUE
   );
@@ -103,6 +104,40 @@ class CSSPP
       }
     }
   }
+
+  // Replace all instances of @import with the contents of the file recursivelly
+  private function importExternals()
+  {
+    
+    // Find all instances of @include
+    preg_match_all('#@import\s*"(.+)";#i', $this->css, $found);
+    
+    // Search through all of the found instances of @include and replace it
+    // with the contents of the file it references
+    foreach($found[1] as $i => $include)
+    {
+      $file = preg_replace('#^("|\')|("|\')$#', '', $include);
+
+      // Make sure we haven't included the file already
+      if (!in_array($file, $this->included))
+      {
+        $base_dir = $this->css_dir . DS;
+        if (substr($file, 0, 1) == '/')
+        {
+          $base_dir = $this->base_dir;
+        }
+        $filename = realpath($base_dir . $file);
+        $csspp = new CSSPP(basename($filename), dirname($filename) . DS, $this->options);
+        $css = (string)$csspp;
+        $this->css = str_replace($found[0][$i], $css, $this->css);
+        array_push($this->included, $file);
+      }
+      else
+      {
+        $this->css = str_replace($found[0][$i], '', $this->css);
+      }
+    }
+  }
   
   // Remove any extra, unneed stuff from the CSS to make it as small as possible
   private function minify()
@@ -117,6 +152,11 @@ class CSSPP
     if ($this->options['includes'])
     {
       $this->includeExternals();
+    }
+
+    if ($this->options['imports'])
+    {
+      $this->importExternals();
     }
     
     if (!$this->options['comments'])
