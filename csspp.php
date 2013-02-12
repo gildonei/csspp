@@ -24,7 +24,7 @@ class CSSPP
     '#\s*user-drag\s*:\s*(.+);#i' => '$0 -moz-user-drag: $1; -o-user-drag: $1; -webkit-user-drag: $1;',
     '#\s*user-select\s*:\s*(.+);#i' => '$0 -moz-user-select: $1; -o-user-select: $1; -webkit-user-select: $1;'
   );
-  
+
   private $base_dir;
   private $css;
   private $file;
@@ -38,22 +38,22 @@ class CSSPP
     'minify' => TRUE,
     'variables' => TRUE
   );
-  
+
   // Constructor method
   // Requires a file and a base directory
   function __construct($file, $base_dir, $options=array())
   {
     // Our intial file
     $file_path = $base_dir . $file;
-    
+
     // Intialize instance variables
     $this->file = $file;
     $this->base_dir = $base_dir;
     $this->css_dir = dirname($file_path);
-    
+
     // Set any options passed in
     $this->setOptions($options);
-    
+
     // Read the intial CSS file into an instance variable
     $this->css = file_get_contents($file_path);
   }
@@ -63,7 +63,19 @@ class CSSPP
   {
     return $this->process();
   }
-  
+
+  // Getter for css
+  public function css()
+  {
+    return $this->css;
+  }
+
+  // Prepend some text (Hopefully CSS) to the beginning of the CSS
+  public function prepend($css)
+  {
+    $this->css = $css . $this->css;
+  }
+
   // Appends some text (Hopefully CSS) to the end of the CSS
   public function append($css)
   {
@@ -73,10 +85,10 @@ class CSSPP
   // Replace all instances of @include with the contents of the file
   private function includeExternals()
   {
-    
+
     // Find all instances of @include
     preg_match_all('#@include\s*\'(.+)\';#i', $this->css, $found);
-    
+
     // Search through all of the found instances of @include and replace it
     // with the contents of the file it references
     foreach($found[1] as $i => $include)
@@ -108,10 +120,10 @@ class CSSPP
   // Replace all instances of @import with the contents of the file recursivelly
   private function importExternals()
   {
-    
+
     // Find all instances of @include
     preg_match_all('#@import\s*"(.+)";#i', $this->css, $found);
-    
+
     // Search through all of the found instances of @include and replace it
     // with the contents of the file it references
     foreach($found[1] as $i => $include)
@@ -138,14 +150,14 @@ class CSSPP
       }
     }
   }
-  
+
   // Remove any extra, unneed stuff from the CSS to make it as small as possible
   private function minify()
   {
     $this->removeWhitespace();
     $this->removeLastSemicolon();
   }
-  
+
   // Processed the CSS
   public function process()
   {
@@ -158,47 +170,47 @@ class CSSPP
     {
       $this->importExternals();
     }
-    
+
     if (!$this->options['comments'])
     {
       $this->removeComments();
     }
-    
+
     if ($this->options['variables'])
     {
       $this->replaceVariables();
     }
-    
+
     if ($this->options['expanders'])
     {
       $this->replaceExpanders();
     }
-    
+
     if ($this->options['bases'])
     {
       $this->replaceBases();
     }
-    
+
     if ($this->options['minify'])
     {
       $this->minify();
     }
-    
+
     return $this->css;
   }
-  
+
   // Remove all of the comments from the CSS file
   private function removeComments()
   {
     $this->css = preg_replace('#\/\*[\d\D]*?\*\/|\t+#', '', $this->css);
   }
-  
+
   // Remove the last semicolon of each selector block
   private function removeLastSemicolon()
   {
     $this->css = str_replace(';}', '}', $this->css);
   }
-  
+
   // Remove extra spaces in the CSS
   private function removeWhitespace()
   {
@@ -206,7 +218,7 @@ class CSSPP
     $this->css = preg_replace('/\s\s+/', '', $this->css);
     $this->css = preg_replace('/\s*({|}|\[|\]|=|~|\+|>|\||;|:|,)\s*/', '$1', $this->css);
   }
-  
+
   // Find the bases and psuedo bases and replace the based-on statements
   private function replaceBases()
   {
@@ -225,15 +237,15 @@ class CSSPP
           $selectors[$k] = trim($selectors[$k]) . ':' . $found[2][$i];
         }
         $selectors = implode(', ', $selectors);
-        
+
         // And apply the properties to the psuedo bases
         $this->css = str_replace($property[0][$j], "{$property[0][$j]} $selectors {{$found[3][$i]}}", $this->css);
       }
-      
+
       // Remove the psuedo base from the CSS
       $this->css = str_replace($base, '', $this->css);
     }
-    
+
     // Find all of the plain-old base statements
     preg_match_all('#@base\(([^\s\{]+)\)\s*\{(\s*[^\}]+)\s*\}\s*#i', $this->css, $found);
     foreach ($found[0] as $i => $base)
@@ -242,7 +254,7 @@ class CSSPP
       $this->css = preg_replace("#based\-on\s*:\s*base\({$found[1][$i]}\)\s*;\s*#", trim($found[2][$i]), $this->css);
     }
   }
-  
+
   // Iterates through the css expanders and replaces them
   private function replaceExpanders()
   {
@@ -251,7 +263,7 @@ class CSSPP
       $this->css = preg_replace($expander, $replacer, $this->css);
     }
   }
-  
+
   // Find the variable declarations and replace the variables
   private function replaceVariables()
   {
@@ -261,7 +273,7 @@ class CSSPP
     {
       // Remove the variable group from the css
       $this->css = str_replace($variable_group, '', $this->css);
-      
+
       // Find the individual variables
       preg_match_all('#([_a-z0-9\-]+)\s*:\s*([^;]+);#i', $found[1][$i], $variables);
       foreach ($variables[1] as $variable => $name)
@@ -271,13 +283,13 @@ class CSSPP
       }
     }
   }
-  
+
   // Set a processor option
   public function setOption($key, $value)
   {
     $this->options[$key] = $value;
   }
-  
+
   // Set multiple processor option at once
   public function setOptions($options)
   {
